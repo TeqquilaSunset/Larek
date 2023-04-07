@@ -14,14 +14,24 @@ namespace Catalog.Controllers
         ApplicationContext db = new ApplicationContext();
 
         [HttpGet("{id}")]
-        public JsonResult Get(Guid id)
+        public ActionResult Get(Guid id)
         {
             var products = db.Products.Find(id);
 
             if (products == null)
             {
-                return new JsonResult(NotFound());
+                return NotFound();
             }
+
+            //var product = new Product()
+            //{
+            //    Name = productDto.Name,
+            //    Description = productDto.Description,
+            //    Price = productDto.Price,
+            //    BrandId = productDto.BrandId,
+            //    CategoryId = productDto.CategoryId
+            //};
+
             return new JsonResult(products);
         }
 
@@ -42,19 +52,9 @@ namespace Catalog.Controllers
                 Price = p.Price,
                 Description = p.Description,
                 BrandId = p.Brand.Id,
-                //new BrandDto
-                //{
-                //    Id = p.Brand.Id,
-                //    Name = p.Brand.Name,
-                //    Description = p.Brand.Description
-                //},
-                CategoryId = p.Brand.Id
-                //new CategoryDto
-                //{
-                //    Id = p.Category.Id,
-                //    Name = p.Category.Name,
-                //    Description = p.Category.Description
-                //}
+                CategoryId = p.Category.Id,
+                BrandName = p.Brand.Name,
+                CategoryName = p.Category.Name
             }).ToList();
 
 
