@@ -2,15 +2,14 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Order.Models;
+using ProductOrder.Models;
 
-namespace Order
+namespace ProductOrder
 {
     public class ApplicationContext : DbContext
     {
 
-        public DbSet<OrderProduct> OrderProducts { get; set; }
-        public DbSet<AllOrder> AllOrders { get; set; }
+        public DbSet<Order> Orders { get; set; }
         public ApplicationContext()
         {
             Database.EnsureCreated();
