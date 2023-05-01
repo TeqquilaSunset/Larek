@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductOrder", "Order\Produ
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Delivery", "Delivery\Delivery.csproj", "{F3040437-56FF-4A0E-9FB9-085D2005D162}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIGateway", "APIGateway\APIGateway.csproj", "{FA76AF41-46DC-4B78-860E-7A1CA3F9F036}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIGateway", "APIGateway\APIGateway.csproj", "{FA76AF41-46DC-4B78-860E-7A1CA3F9F036}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
