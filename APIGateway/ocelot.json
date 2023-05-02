@@ -1,8 +1,12 @@
 ﻿{
   "Routes": [
+    // Catalog
     {
       "UpstreamPathTemplate": "/Brands",
-      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post"
+      ],
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -15,7 +19,10 @@
     },
     {
       "UpstreamPathTemplate": "/Catalog",
-      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post"
+      ],
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -28,7 +35,11 @@
     },
     {
       "UpstreamPathTemplate": "/Catalog/{id}",
-      "UpstreamHttpMethod": [ "Delete", "Put", "Get" ],
+      "UpstreamHttpMethod": [
+        "Delete",
+        "Put",
+        "Get"
+      ],
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -41,7 +52,10 @@
     },
     {
       "UpstreamPathTemplate": "/Categorys",
-      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post"
+      ],
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -51,6 +65,72 @@
       ],
       "DownstreamPathTemplate": "/Categorys",
       "SwaggerKey": "Catalogs"
+    },
+    // ProductOrder
+    {
+      "UpstreamPathTemplate": "/Order/{id}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Delete"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5016
+        }
+      ],
+      "DownstreamPathTemplate": "/Order/{id}",
+      "SwaggerKey": "ProductOrder"
+    },
+    {
+      "UpstreamPathTemplate": "/Order",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5016
+        }
+      ],
+      "DownstreamPathTemplate": "/Order",
+      "SwaggerKey": "ProductOrder"
+    },
+    // Delivery
+    {
+      "UpstreamPathTemplate": "/Delivery/{id}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Delete"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5064
+        }
+      ],
+      "DownstreamPathTemplate": "/Delivery/{id}",
+      "SwaggerKey": "Delivery"
+    },
+    {
+      "UpstreamPathTemplate": "/Delivery",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5064
+        }
+      ],
+      "DownstreamPathTemplate": "/Delivery",
+      "SwaggerKey": "Delivery"
     }
   ],
   "SwaggerEndPoints": [
