@@ -1,4 +1,6 @@
-﻿namespace Catalog.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Catalog.Models
 {
     public class ProductDto
     {
@@ -8,7 +10,5 @@
         public string Description { get; set; }
         public Guid BrandId { get; set; }
         public Guid CategoryId { get; set; }
-        public string BrandName { get; set; }
-        public string CategoryName { get; set; }
     }
 }

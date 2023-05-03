@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using Catalog.Models;
+using System;
+using Microsoft.AspNetCore.Server.IIS.Core;
 
 namespace Catalog.Controllers
 {
@@ -14,35 +16,39 @@ namespace Catalog.Controllers
         ApplicationContext db = new ApplicationContext();
 
         [HttpGet("{id}")]
-        public ActionResult Get(Guid id)
+        public async Task<ActionResult> GetProduct(Guid id)
         {
-            var products = db.Products.Find(id);
+            //var products = await db.Products.FindAsync(id);
+            var products = await db.Products.Include(p => p.Brand).Include(p => p.Category).ToListAsync();
+
+            var productDto = products.Select(p => new ProductDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                Description = p.Description,
+                BrandId = p.Brand.Id,
+                CategoryId = p.Category.Id,
+                //BrandName = p.Brand.Name,
+                //CategoryName = p.Category.Name
+            });
 
             if (products == null)
             {
                 return NotFound();
             }
 
-            //var product = new Product()
-            //{
-            //    Name = productDto.Name,
-            //    Description = productDto.Description,
-            //    Price = productDto.Price,
-            //    BrandId = productDto.BrandId,
-            //    CategoryId = productDto.CategoryId
-            //};
-
-            return new JsonResult(products);
+            return Ok(productDto);
         }
 
         [HttpGet]
-        public ActionResult Get()
+        public async Task<ActionResult> GetAllProducts()
         {
-            var products = db.Products.Include(p => p.Brand).Include(p => p.Category).ToList();
+            var products = await db.Products.Include(p => p.Brand).Include(p => p.Category).ToListAsync();
 
             if (!products.Any())
             {
-                return NotFound();
+                return NoContent();
             }
 
             var productDto = products.Select(p => new ProductDto
@@ -53,19 +59,40 @@ namespace Catalog.Controllers
                 Description = p.Description,
                 BrandId = p.Brand.Id,
                 CategoryId = p.Category.Id,
-                BrandName = p.Brand.Name,
-                CategoryName = p.Category.Name
+                //BrandName = p.Brand.Name,
+                //CategoryName = p.Category.Name
             }).ToList();
 
 
-            return new JsonResult(productDto);
+            return Ok(productDto);
         }
 
         [HttpPost]
-        public ActionResult Post(ProductDto productDto)
+        public async Task<ActionResult> Post(ProductDto productDto)
         {
             var product = new Product()
             {
+                Id = Guid.NewGuid(),
+                Name = productDto.Name,
+                Description = productDto.Description,
+                Price = productDto.Price,
+                BrandId = productDto.BrandId,
+                CategoryId = productDto.CategoryId
+            };
+            productDto.Id = product.Id;
+
+            await db.Products.AddAsync(product);
+            await db.SaveChangesAsync();
+
+            return Ok(productDto);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateProduct(Guid id, ProductDto productDto)
+        {
+            var product = new Product()
+            {
+                Id = productDto.Id,
                 Name = productDto.Name,
                 Description = productDto.Description,
                 Price = productDto.Price,
@@ -73,75 +100,38 @@ namespace Catalog.Controllers
                 CategoryId = productDto.CategoryId
             };
 
-            db.Products.Add(product);
-            db.SaveChanges();
-
-            //var returnProductDto = new ProductReturnDto
-            //{
-            //    Id = product.Id,
-            //    Name = product.Name,
-            //    Description = product.Description,
-            //    Price = product.Price,
-            //    BrandName = product.Brand.Name,
-            //    CategoryName = product.Category.Name
-            //};
-
-            var returnProduct = db.Products.Find(product.Id);
-            return Ok(returnProduct);
-
-            //if (product == null)
-            //{
-            //    return new JsonResult(BadRequest());
-            //}
-
-            //db.Products.Add(product);
-            //db.SaveChanges();
-            //return new JsonResult(product);
-        }
-
-        [HttpPut("{id}")]
-        public JsonResult Put(Guid id, Product product)
-        {
             if (id != product.Id)
             {
-                return new JsonResult(BadRequest());
+                return BadRequest();
             }
 
             db.Entry(product).State = EntityState.Modified;
 
             try
             {
-                db.SaveChangesAsync();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductsExists(id))
-                {
-                    return new JsonResult(NotFound());
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
-            //return NoContent();
-            //return await _context.TodoItem.FindAsync(id);
-            return new JsonResult(product);
+
+            return Ok(productDto);
         }
 
         [HttpDelete("{id}")]
-        public JsonResult Delete(Guid id)
+        public async Task<ActionResult> DeleteProduct(Guid id)
         {
             var products = db.Products.Find(id);
 
             if (products == null)
             {
-                return new JsonResult(NotFound());
+                return NotFound();
             }
             db.Products.Remove(products);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
-            return new JsonResult(Ok());
+            return Ok();
         }
 
         private bool ProductsExists(Guid id)

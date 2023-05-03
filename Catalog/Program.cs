@@ -43,23 +43,24 @@ namespace Catalog
             {
                 Id = Guid.NewGuid(),
                 Name = "SAMSUNG",
-                Description = "Самсунг топ, ля ля ля"
+                Description = "Самсунг топ, ля ля ля",
             };
 
 
-            //Product newProduct = new Product
-            //{
-            //    Id = Guid.NewGuid(), // Генерация нового уникального идентификатора типа Guid
-            //    Name = "New Product",
-            //    Description = "A new product",
-            //    Price = 9.99M,
-            //    BrandId = brand.Id, // Установка идентификатора связанного объекта Brand
-            //    Categories = new List<Category> { category1, category2 } // Установка связанных объектов Category
-            //};
+            Product newProduct = new Product
+            {
+                Id = Guid.NewGuid(), // Генерация нового уникального идентификатора типа Guid
+                Name = "New Product",
+                Description = "A new product",
+                Price = 9.99M,
+                BrandId = brand.Id, // Установка идентификатора связанного объекта Brand
+                CategoryId = category1.Id,
+            };
             using (ApplicationContext db = new ApplicationContext())
             {
                 db.Brands.Add(brand);
                 db.Categories.AddRange(category1, category2);
+                db.Products.Add(newProduct);
                 db.SaveChanges();
             }
 

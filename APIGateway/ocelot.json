@@ -18,6 +18,23 @@
       "SwaggerKey": "Catalogs"
     },
     {
+      "UpstreamPathTemplate": "/Brands/{id}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Delete",
+        "Put"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 3001
+        }
+      ],
+      "DownstreamPathTemplate": "/Brands/{id}",
+      "SwaggerKey": "Catalogs"
+    },
+    {
       "UpstreamPathTemplate": "/Catalog",
       "UpstreamHttpMethod": [
         "Get",
@@ -64,6 +81,23 @@
         }
       ],
       "DownstreamPathTemplate": "/Categorys",
+      "SwaggerKey": "Catalogs"
+    },
+    {
+      "UpstreamPathTemplate": "/Categorys/{id}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Put",
+        "Delete"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 3001
+        }
+      ],
+      "DownstreamPathTemplate": "/Categorys/{id}",
       "SwaggerKey": "Catalogs"
     },
     // ProductOrder
