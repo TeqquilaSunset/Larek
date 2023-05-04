@@ -2,6 +2,8 @@
 using ProductOrder.Models;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace ProductOrder.Controllers
 {
@@ -11,6 +13,11 @@ namespace ProductOrder.Controllers
     {
         ApplicationContext db = new ApplicationContext();
 
+        [HttpGet]
+        //public async Task<ActionResult> GetAllOrders()
+        //{
+        //    await db.Orders.ToListAsync();
+        //}
         [HttpGet("{id}")]
         public ActionResult Get(Guid id)
         {
@@ -39,7 +46,7 @@ namespace ProductOrder.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync(Order order)
         {
-            order.CreatedDate = DateTime.Now;
+            //order.CreatedDate = DateTime.Now;
             await db.Orders.AddAsync(order);
             await db.SaveChangesAsync();
 
