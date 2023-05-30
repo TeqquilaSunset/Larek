@@ -1,4 +1,10 @@
+using Microsoft.AspNetCore.Mvc;
 using ProductOrder.Models;
+using ProductOrder.Models.Dtos;
+using System.Diagnostics;
+using System.Net.Http.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace ProductOrder
 {
@@ -25,7 +31,7 @@ namespace ProductOrder
 
             using(ApplicationContext db = new ApplicationContext()) 
             {
-                var shippingAdress = new ShippingAdress()
+                var shippingAddress = new ShippingAddress()
                 {
                     Id = Guid.NewGuid(),
                     Street = "Пастера",
@@ -52,7 +58,7 @@ namespace ProductOrder
                     OrderDate = DateTime.Now,
                     TotalAmount = 0,
                     OrderItems = new List<OrderItem>() { },
-                    ShippingAdressId = shippingAdress.Id,
+                    ShippingAddressId = shippingAddress.Id,
                 };
 
                 var orderItem = new OrderItem()
@@ -76,10 +82,14 @@ namespace ProductOrder
                 order.OrderItems.Add(orderItem);
                 order.OrderItems.Add(orderItem2);
 
+                //order.TotalAmount = orderItem.Price * orderItem.Quantity + orderItem2.Quantity * orderItem2.Price;
                 //db.AddRange(shippingAdress, product1, customer, order, orderItem);
-                db.AddRange(shippingAdress, customer, order, orderItem);
+                //db.AddRange(shippingAdress, customer, order, orderItem);
+                db.AddRange(shippingAddress, customer);
                 db.SaveChanges();
-            
+                db.AddRange(order);
+                db.SaveChanges();
+
             }
             app.Run();
         }

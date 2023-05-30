@@ -12,11 +12,11 @@ namespace ProductOrder
         public DbSet<Order> Orders { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
-        public DbSet<ShippingAdress> ShippingAdresses { get; set; }
+        public DbSet<ShippingAddress> ShippingAddresses { get; set; }
 
         public ApplicationContext()
         {
-            Database.EnsureDeleted();
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 

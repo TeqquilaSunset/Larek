@@ -1,6 +1,6 @@
 ﻿namespace ProductOrder.Models
 {
-    public class ShippingAdress
+    public class ShippingAddress
     {
         public Guid Id { get; set; }
         public string Street { get; set; }
