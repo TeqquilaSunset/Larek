@@ -56,6 +56,7 @@ namespace ProductOrder
                     Id = Guid.NewGuid(),
                     CustomerId = customer.Id,
                     OrderDate = DateTime.Now,
+                    OrderStatus = Enum.OrderEnum.Cancelled,
                     TotalAmount = 0,
                     OrderItems = new List<OrderItem>() { },
                     ShippingAddressId = shippingAddress.Id,

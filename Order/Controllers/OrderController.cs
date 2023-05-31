@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using ProductOrder.Models.Dtos;
 using ProductOrder.Enum;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace ProductOrder.Controllers
 {
@@ -15,55 +16,55 @@ namespace ProductOrder.Controllers
     {
         ApplicationContext db = new ApplicationContext();
 
-        //[HttpGet]
-        //public async Task<ActionResult> GetAllOrders()
-        //{
-        //    var orders = await db.Orders.ToListAsync();
-        //    return Ok(orders);
-        //}
-
-        //[HttpGet]
-        //public ActionResult Get()
-        //{
-        //    var orders = db.Orders.ToList();
-
-        //    if (!orders.Any())
-        //    {
-        //        return NotFound();
-        //    }
-        //    return Ok(orders);
-        //}
-
+        /// <summary>
+        /// Возвращает из базы данных все заказы со списком содержимого из базы данных
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        public ActionResult Get()
+        public async Task<ActionResult> Get()
         {
-            var customers = db.ShippingAddresses.ToList();
+            var orders = await db.Orders.Include(p => p.OrderItems).ToListAsync();
 
-            if (!customers.Any())
+            if (!orders.Any())
             {
                 return NotFound();
             }
-            return Ok(customers);
+
+            var ordersDto = orders.Select(p => new OrderDto
+            {
+                Id = p.Id,
+                CustomerId = p.Id,
+                OrderDate = p.OrderDate,
+                OrderItemsDto = ConverItemToDto(p.OrderItems),
+                OrderStatus = p.OrderStatus,
+                ShippingAddressId = p.ShippingAddressId,
+                TotalAmount = p.TotalAmount
+            });
+
+            return Ok(ordersDto);
         }
 
-        //[HttpGet]
-        //public async Task<ActionResult> GetOrderItem()
-        //{
-        //    var orderItems = await db.OrderItems.ToListAsync();
-        //    return Ok(orderItems);
-        //}
-
         [HttpGet("{id}")]
-        public ActionResult Get(Guid id)
+        public async Task<ActionResult> Get(Guid id)
         {
-            var order = db.Orders.Find(id);
+            var order = await db.Orders.Include(p => p.OrderItems).SingleOrDefaultAsync(p => p.Id == id);
 
             if (order == null)
             {
                 return NotFound();
             }
 
-            return Ok(order);
+            var orderDto = new OrderDto()
+            {
+                Id = id,
+                CustomerId = order.Id,
+                OrderDate = order.OrderDate,
+                OrderItemsDto = ConverItemToDto(order.OrderItems),
+                OrderStatus = order.OrderStatus,
+                ShippingAddressId = order.ShippingAddressId,
+                TotalAmount = order.TotalAmount,
+            };
+            return Ok(orderDto);
         }
 
         /// <summary>
@@ -102,7 +103,7 @@ namespace ProductOrder.Controllers
             // Сохранение заказа в базе данных
             order.OrderItems = orderItems;
 
-            db.Orders.Add(order);
+            await db.Orders.AddAsync(order);
             db.SaveChanges();
 
             return Ok(order.Id); // Возвращаем идентификатор нового заказа
@@ -113,7 +114,7 @@ namespace ProductOrder.Controllers
         {
             var order = await db.Orders.FindAsync(id);
 
-            if(order == null)
+            if (order == null)
             {
                 return NotFound();
             }
@@ -138,6 +139,30 @@ namespace ProductOrder.Controllers
             db.Orders.Remove(order);
             db.SaveChanges();
             return Ok("Deleted successfully");
+        }
+
+        private List<OrderItemsDto> ConverItemToDto(List<OrderItem> item)
+        {
+            if (item == null)
+            {
+                return null;
+            }
+            var orderItems = new List<OrderItemsDto>();
+            foreach (var orderItem in item)
+            {
+                var orderItemDto = new OrderItemsDto
+                {
+                    Id = orderItem.Id,
+                    OrderId = orderItem.OrderId,
+                    ProductId = orderItem.ProductId,
+                    Quantity = orderItem.Quantity,
+                    Price = orderItem.Price
+                };
+
+                orderItems.Add(orderItemDto);
+            }
+
+            return orderItems;
         }
     }
 }
