@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Catalog;
 using Catalog.Models;
+using Catalog.Models.Dtos;
 
 namespace Catalog.Controllers
 {

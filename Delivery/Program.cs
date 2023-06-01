@@ -25,16 +25,16 @@ namespace Delivery
 
             ApplicationContext db = new();
 
-            CollectedOrders collectedOrders = new CollectedOrders()
-            {
-                NameDeliverer = "Ivan",
-                CollectedDate = DateTime.Now,
-                IsCollected = false,
-                OrderId = Guid.NewGuid(),
-            };
+            //CollectedOrders collectedOrders = new CollectedOrders()
+            //{
+            //    NameDeliverer = "Ivan",
+            //    CollectedDate = DateTime.Now,
+            //    IsCollected = false,
+            //    OrderId = Guid.NewGuid(),
+            //};
 
-            db.CollectedOrders.Add(collectedOrders);
-            db.SaveChanges();
+            //db.CollectedOrders.Add(collectedOrders);
+            //db.SaveChanges();
 
             app.Run();
         }

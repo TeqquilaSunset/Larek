@@ -29,7 +29,7 @@ namespace ProductOrder
                 name: "default",
                 pattern: "{controller}/{action}/{id?}");
 
-            using(ApplicationContext db = new ApplicationContext()) 
+            using (ApplicationContext db = new ApplicationContext()) 
             {
                 var shippingAddress = new ShippingAddress()
                 {
@@ -56,7 +56,8 @@ namespace ProductOrder
                     Id = Guid.NewGuid(),
                     CustomerId = customer.Id,
                     OrderDate = DateTime.Now,
-                    OrderStatus = Enum.OrderEnum.Cancelled,
+                    OrderStatus = Enum.OrderEnum.Active,
+                    Delivery = false,
                     TotalAmount = 0,
                     OrderItems = new List<OrderItem>() { },
                     ShippingAddressId = shippingAddress.Id,
@@ -83,7 +84,7 @@ namespace ProductOrder
                 order.OrderItems.Add(orderItem);
                 order.OrderItems.Add(orderItem2);
 
-                //order.TotalAmount = orderItem.Price * orderItem.Quantity + orderItem2.Quantity * orderItem2.Price;
+                order.TotalAmount = orderItem.Price * orderItem.Quantity + orderItem2.Quantity * orderItem2.Price;
                 //db.AddRange(shippingAdress, product1, customer, order, orderItem);
                 //db.AddRange(shippingAdress, customer, order, orderItem);
                 db.AddRange(shippingAddress, customer);
@@ -91,6 +92,21 @@ namespace ProductOrder
                 db.AddRange(order);
                 db.SaveChanges();
 
+
+                var order2 = new Order()
+                {
+                    Id = Guid.NewGuid(),
+                    CustomerId = customer.Id,
+                    OrderDate = DateTime.Now,
+                    OrderStatus = Enum.OrderEnum.Active,
+                    Delivery = false,
+                    TotalAmount = 0,
+                    
+                    ShippingAddressId = shippingAddress.Id,
+                };
+
+                db.AddRange(order2);
+                db.SaveChanges();
             }
             app.Run();
         }

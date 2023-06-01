@@ -1,4 +1,4 @@
-﻿namespace Delivery.Models
+﻿namespace ProductOrder.Models
 {
     public class CollectedOrders
     {

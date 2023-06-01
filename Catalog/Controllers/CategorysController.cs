@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Catalog.Models;
 using Microsoft.EntityFrameworkCore;
+using Catalog.Models.Dtos;
 
 namespace Catalog.Controllers
 {

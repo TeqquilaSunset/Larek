@@ -53,6 +53,7 @@ namespace Catalog
                 Name = "New Product",
                 Description = "A new product",
                 Price = 9.99M,
+                Quantity= 5,
                 BrandId = brand.Id, // Установка идентификатора связанного объекта Brand
                 CategoryId = category1.Id,
             };

@@ -9,6 +9,7 @@ namespace ProductOrder.Models
         public DateTime OrderDate { get; set; }
         public decimal TotalAmount { get; set; }
         public OrderEnum OrderStatus { get; set; }
+        public bool Delivery { get; set; }
         public List<OrderItem> OrderItems { get; set; }
         public Guid CustomerId { get; set; }
         public Customer Customer { get; set; }

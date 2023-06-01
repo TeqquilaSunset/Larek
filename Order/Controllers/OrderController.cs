@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using ProductOrder.Models.Dtos;
 using ProductOrder.Enum;
 using static NuGet.Packaging.PackagingConstants;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace ProductOrder.Controllers
 {
@@ -21,7 +23,7 @@ namespace ProductOrder.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> Get()
+        public async Task<ActionResult> GetAll()
         {
             var orders = await db.Orders.Include(p => p.OrderItems).ToListAsync();
 
@@ -33,9 +35,10 @@ namespace ProductOrder.Controllers
             var ordersDto = orders.Select(p => new OrderDto
             {
                 Id = p.Id,
-                CustomerId = p.Id,
+                CustomerId = p.CustomerId,
                 OrderDate = p.OrderDate,
-                OrderItemsDto = ConverItemToDto(p.OrderItems),
+                OrderItemsDto = ConvertItemToDto(p.OrderItems),
+                Delivery = p.Delivery,
                 OrderStatus = p.OrderStatus,
                 ShippingAddressId = p.ShippingAddressId,
                 TotalAmount = p.TotalAmount
@@ -57,9 +60,10 @@ namespace ProductOrder.Controllers
             var orderDto = new OrderDto()
             {
                 Id = id,
-                CustomerId = order.Id,
+                CustomerId = order.CustomerId,
                 OrderDate = order.OrderDate,
-                OrderItemsDto = ConverItemToDto(order.OrderItems),
+                OrderItemsDto = ConvertItemToDto(order.OrderItems),
+                Delivery = order.Delivery,
                 OrderStatus = order.OrderStatus,
                 ShippingAddressId = order.ShippingAddressId,
                 TotalAmount = order.TotalAmount,
@@ -75,16 +79,22 @@ namespace ProductOrder.Controllers
         [HttpPost]
         public async Task<ActionResult> PostAsync(OrderDto orderDto)
         {
+            if (orderDto.OrderItemsDto == null)
+            {
+                BadRequest("Null Items");
+            }
             var order = new Order
             {
                 Id = Guid.NewGuid(),
                 CustomerId = orderDto.CustomerId,
                 OrderStatus = OrderEnum.Active,
-                OrderDate = orderDto.OrderDate,
+                OrderDate = DateTime.Now,
+                Delivery = orderDto.Delivery,
                 TotalAmount = orderDto.TotalAmount,
                 ShippingAddressId = orderDto.ShippingAddressId
             };
 
+            decimal totalAmount = 0;
             var orderItems = new List<OrderItem>();
             foreach (var orderItemDto in orderDto.OrderItemsDto)
             {
@@ -96,16 +106,42 @@ namespace ProductOrder.Controllers
                     Quantity = orderItemDto.Quantity,
                     Price = orderItemDto.Price
                 };
-
+                totalAmount += orderItemDto.Price * orderItemDto.Quantity;
                 orderItems.Add(orderItem);
             }
 
-            // Сохранение заказа в базе данных
             order.OrderItems = orderItems;
+            order.TotalAmount = totalAmount;
 
-            await db.Orders.AddAsync(order);
+            if (order.Delivery == true)
+            {
+                try
+                {
+                    using (HttpClient client = new HttpClient())
+                    {
+                        var requestBody = new CollectedOrders()
+                        {
+                            Id = Guid.NewGuid(),
+                            NameDeliverer = "Иван Панаев",
+                            OrderId = order.Id
+                        };
+
+                        var requestData = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
+                        string apiUrl = "http://localhost:5064";
+                        string requestUrl = $"{apiUrl}/Delivery";
+                        HttpResponseMessage response = await client.PostAsync(requestUrl, requestData);
+
+                        string responseBody = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex);
+                }
+            }
+
+            db.Add(order);
             db.SaveChanges();
-
             return Ok(order.Id); // Возвращаем идентификатор нового заказа
         }
 
@@ -141,7 +177,7 @@ namespace ProductOrder.Controllers
             return Ok("Deleted successfully");
         }
 
-        private List<OrderItemsDto> ConverItemToDto(List<OrderItem> item)
+        private List<OrderItemsDto> ConvertItemToDto(List<OrderItem> item)
         {
             if (item == null)
             {

@@ -8,6 +8,7 @@ namespace ProductOrder.Models.Dtos
         public Guid CustomerId { get; set; }
         public DateTime OrderDate { get; set; }
         public OrderEnum OrderStatus { get; set; }
+        public bool Delivery { get; set; }
         public decimal TotalAmount { get; set; }
         public List<OrderItemsDto> OrderItemsDto { get; set; }
         public Guid ShippingAddressId { get; set; }

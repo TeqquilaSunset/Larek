@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Catalog.Models
+namespace Catalog.Models.Dtos
 {
     public class ProductReturnDto
     {

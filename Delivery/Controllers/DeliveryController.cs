@@ -11,7 +11,7 @@ namespace Delivery.Controllers
         ApplicationContext db = new();
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync(Guid id)
+        public async Task<ActionResult> GetAsync(Guid id)
         {
             var collectOrders = await db.CollectedOrders.FindAsync(id);
             if(collectOrders == null)
@@ -22,20 +22,23 @@ namespace Delivery.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        public async Task<ActionResult> GetAsync()
         {
             var collectOrders = await db.CollectedOrders.ToListAsync();
             return Ok(collectOrders);
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync(CollectedOrders collectedOrders)
+        public async Task<ActionResult> PostAsync(CollectedOrders collectedOrders)
         {
-            collectedOrders.CollectedDate = DateTime.Now;
             await db.CollectedOrders.AddAsync(collectedOrders);
+
             await db.SaveChangesAsync();
             return Ok(collectedOrders);
         }
+
+        //[HttpPut]
+        //public async Task<ActionResult> 
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletAsync(Guid id)

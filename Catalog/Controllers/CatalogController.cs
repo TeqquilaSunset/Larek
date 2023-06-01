@@ -5,6 +5,7 @@ using System.Text.Json;
 using Catalog.Models;
 using System;
 using Microsoft.AspNetCore.Server.IIS.Core;
+using Catalog.Models.Dtos;
 
 namespace Catalog.Controllers
 {
@@ -59,6 +60,7 @@ namespace Catalog.Controllers
                 Description = p.Description,
                 BrandId = p.Brand.Id,
                 CategoryId = p.Category.Id,
+                Quantity = p.Quantity,
                 //BrandName = p.Brand.Name,
                 //CategoryName = p.Category.Name
             }).ToList();
@@ -76,6 +78,7 @@ namespace Catalog.Controllers
                 Name = productDto.Name,
                 Description = productDto.Description,
                 Price = productDto.Price,
+                Quantity= productDto.Quantity,
                 BrandId = productDto.BrandId,
                 CategoryId = productDto.CategoryId
             };
@@ -96,6 +99,7 @@ namespace Catalog.Controllers
                 Name = productDto.Name,
                 Description = productDto.Description,
                 Price = productDto.Price,
+                Quantity = productDto.Quantity,
                 BrandId = productDto.BrandId,
                 CategoryId = productDto.CategoryId
             };
@@ -132,11 +136,6 @@ namespace Catalog.Controllers
             await db.SaveChangesAsync();
 
             return Ok();
-        }
-
-        private bool ProductsExists(Guid id)
-        {
-            return db.Products.Any(e => e.Id == id);
         }
     }
 }

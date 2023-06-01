@@ -1,6 +1,6 @@
-﻿namespace Catalog.Models
+﻿namespace Catalog.Models.Dtos
 {
-    public class CategoryDto
+    public class BrandDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
